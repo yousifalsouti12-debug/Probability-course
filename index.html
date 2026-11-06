@@ -1,0 +1,716 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>مختبر الاحتمالات</title>
+<meta name="description" content="موقع تفاعلي لمادة الاحتمالات: شباتر وملفات، مولّد اختبارات، ومساعد شرح.">
+<style>
+:root{
+  --bg:#f6f7fb; --card:#ffffff; --text:#1c2333; --muted:#667085; --line:#e4e7ee;
+  --primary:#3b5bdb; --primary-d:#2f49b0; --accent:#0ca678; --danger:#e03131; --warn:#f08c00;
+  --soft:#edf2ff; --ok-bg:#e6fcf5; --bad-bg:#fff0f0; --shadow:0 2px 12px rgba(20,30,60,.07);
+}
+@media (prefers-color-scheme: dark){
+  :root{ --bg:#0f1320; --card:#171c2e; --text:#e8ebf5; --muted:#9aa3bb; --line:#262d45;
+    --primary:#748ffc; --primary-d:#91a7ff; --accent:#38d9a9; --danger:#ff8787; --warn:#ffa94d;
+    --soft:#1d2440; --ok-bg:#12332c; --bad-bg:#3a1c20; --shadow:none; }
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;font-family:"Segoe UI",Tahoma,"Noto Sans Arabic",Arial,sans-serif;background:var(--bg);color:var(--text);line-height:1.8}
+.wrap{max-width:1000px;margin:0 auto;padding:0 16px}
+header{background:var(--card);border-bottom:1px solid var(--line);position:sticky;top:0;z-index:10}
+.bar{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;padding:10px 0}
+.brand{font-weight:800;font-size:1.15rem;display:flex;gap:8px;align-items:center}
+.brand i{font-style:normal;background:var(--primary);color:#fff;border-radius:10px;padding:2px 9px}
+nav{display:flex;gap:6px;flex-wrap:wrap}
+nav button{background:none;border:0;color:var(--muted);font:inherit;font-weight:600;padding:6px 14px;border-radius:999px;cursor:pointer}
+nav button:hover{background:var(--soft)}
+nav button.on{background:var(--primary);color:#fff}
+main{padding:22px 0 60px}
+section{display:none}
+section.on{display:block}
+h1,h2,h3{line-height:1.4;margin:.2em 0 .5em}
+.card{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:18px;box-shadow:var(--shadow)}
+.grid{display:grid;gap:14px}
+.g3{grid-template-columns:repeat(auto-fit,minmax(240px,1fr))}
+.g2{grid-template-columns:repeat(auto-fit,minmax(300px,1fr))}
+.hero{background:linear-gradient(135deg,var(--primary),#7048e8);color:#fff;border-radius:20px;padding:34px 24px;margin-bottom:18px}
+.hero h1{font-size:1.8rem;margin:0 0 8px}
+.hero p{margin:0 0 16px;opacity:.95}
+.btn{display:inline-block;background:var(--primary);color:#fff;border:0;border-radius:12px;padding:9px 18px;font:inherit;font-weight:700;cursor:pointer;text-decoration:none}
+.btn:hover{background:var(--primary-d)}
+.btn.light{background:#fff;color:#3b5bdb}
+.btn.ghost{background:var(--soft);color:var(--primary)}
+.btn.sm{padding:5px 12px;font-size:.9rem;border-radius:10px}
+.btn:disabled{opacity:.5;cursor:not-allowed}
+.m{direction:ltr;unicode-bidi:isolate;display:inline-block;font-family:"Cambria Math","Times New Roman",serif;background:var(--soft);border-radius:8px;padding:0 8px;margin:1px 2px;font-size:1.02em}
+.muted{color:var(--muted)}
+.tag{display:inline-block;font-size:.8rem;border-radius:999px;padding:1px 10px;background:var(--soft);color:var(--primary);font-weight:700}
+input,select{font:inherit;color:var(--text);background:var(--bg);border:1px solid var(--line);border-radius:10px;padding:7px 10px;max-width:100%}
+input:focus,select:focus,button:focus-visible{outline:2px solid var(--primary);outline-offset:1px}
+label{font-weight:600}
+.row{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
+.chips{display:flex;gap:8px;flex-wrap:wrap}
+.chip{display:inline-flex;gap:6px;align-items:center;background:var(--bg);border:1px solid var(--line);border-radius:999px;padding:4px 12px;cursor:pointer;user-select:none}
+.chip:has(input:checked){background:var(--soft);border-color:var(--primary)}
+.chip input{accent-color:var(--primary)}
+/* chapters */
+.chap h3{margin:0}
+.chap details{margin-top:8px}
+.chap summary{cursor:pointer;font-weight:700;color:var(--primary)}
+.formulas{display:grid;gap:4px;margin:8px 0}
+.files{display:flex;gap:8px;flex-wrap:wrap;margin-top:10px}
+.file{display:inline-flex;gap:6px;align-items:center;text-decoration:none;color:var(--text);background:var(--bg);border:1px solid var(--line);border-radius:10px;padding:5px 12px;font-size:.92rem}
+.file:hover{border-color:var(--primary)}
+.file b{font-size:.72rem;background:var(--primary);color:#fff;border-radius:6px;padding:0 6px}
+/* quiz */
+.progress{height:8px;background:var(--line);border-radius:999px;overflow:hidden;margin:8px 0 14px}
+.progress div{height:100%;background:var(--accent);transition:width .25s}
+.qtext{font-size:1.15rem;font-weight:700;margin:8px 0 14px}
+.opts{display:grid;gap:10px}
+.opt{text-align:start;background:var(--bg);border:2px solid var(--line);border-radius:12px;padding:10px 14px;font:inherit;color:var(--text);cursor:pointer;display:flex;gap:10px;align-items:center}
+.opt:hover:not(:disabled){border-color:var(--primary)}
+.opt.sel{border-color:var(--primary);background:var(--soft)}
+.opt.ok{border-color:var(--accent);background:var(--ok-bg)}
+.opt.bad{border-color:var(--danger);background:var(--bad-bg)}
+.opt .l{font-weight:800;color:var(--muted)}
+.opt .v{direction:ltr;unicode-bidi:isolate;font-family:"Cambria Math","Times New Roman",serif;font-size:1.05rem}
+.expl{margin-top:14px;border-radius:12px;padding:12px 14px;background:var(--soft)}
+.score{font-size:2.4rem;font-weight:800;color:var(--primary);text-align:center}
+.rev{border-top:1px solid var(--line);padding:12px 0}
+.rev .st{font-weight:800}
+/* assistant */
+.chat{display:flex;flex-direction:column;height:520px}
+.msgs{flex:1;overflow:auto;padding:6px;display:flex;flex-direction:column;gap:10px}
+.msg{max-width:88%;padding:10px 14px;border-radius:16px;border:1px solid var(--line)}
+.msg.u{align-self:flex-start;background:var(--primary);color:#fff;border-color:var(--primary)}
+.msg.b{align-self:flex-end;background:var(--bg)}
+.msg p{margin:.3em 0}
+.msg .m{color:var(--text)}
+.msg.u .m{background:rgba(255,255,255,.2);color:#fff}
+.compose{display:flex;gap:8px;margin-top:10px}
+.compose input{flex:1}
+.calc{display:grid;gap:8px;margin-bottom:16px}
+.calc .out{background:var(--soft);border-radius:10px;padding:8px 12px;min-height:40px}
+.calc input{width:90px}
+footer{text-align:center;color:var(--muted);padding:20px 0;font-size:.9rem}
+@media (max-width:600px){.hero h1{font-size:1.4rem}.chat{height:460px}}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="wrap bar">
+    <div class="brand"><i>P</i> مختبر الاحتمالات</div>
+    <nav id="nav">
+      <button data-tab="home" class="on">الرئيسية</button>
+      <button data-tab="chapters">الشباتر والملفات</button>
+      <button data-tab="quiz">مولّد الاختبارات</button>
+      <button data-tab="assistant">مساعد الشرح</button>
+    </nav>
+  </div>
+</header>
+
+<main class="wrap">
+
+<!-- الرئيسية -->
+<section id="home" class="on">
+  <div class="hero">
+    <h1>تعلّم الاحتمالات بشكل تفاعلي</h1>
+    <p>راجع الشباتر، حمّل الملفات، اختبر نفسك بأسئلة جديدة في كل مرة، واسأل المساعد عن أي قاعدة أو قانون.</p>
+    <button class="btn light" data-go="quiz">ابدأ اختبار الآن</button>
+  </div>
+  <div class="grid g3">
+    <div class="card"><h3>📚 الشباتر والملفات</h3><p class="muted">ملخصات وقوانين كل شابتر مع ملفاتك (PDF، عروض، تمارين) وبحث سريع.</p><button class="btn ghost sm" data-go="chapters">افتح</button></div>
+    <div class="card"><h3>📝 مولّد الاختبارات</h3><p class="muted">أسئلة متجددة بأرقام عشوائية مع حل مفصّل، بنمط تدريب أو اختبار.</p><button class="btn ghost sm" data-go="quiz">افتح</button></div>
+    <div class="card"><h3>💬 مساعد الشرح</h3><p class="muted">اسأل عن أي مفهوم، واحسب التوافيق والتباديل وذات الحدين وبايز.</p><button class="btn ghost sm" data-go="assistant">افتح</button></div>
+  </div>
+  <div class="card" style="margin-top:14px" id="homeStats"></div>
+</section>
+
+<!-- الشباتر -->
+<section id="chapters">
+  <h2>الشباتر والملفات</h2>
+  <div class="card" style="margin-bottom:14px">
+    <div class="row">
+      <input id="fSearch" type="search" placeholder="ابحث في الشباتر والملفات…" style="flex:1;min-width:200px">
+      <select id="fType">
+        <option value="">كل أنواع الملفات</option>
+        <option value="pdf">PDF</option>
+        <option value="ppt">عروض</option>
+        <option value="doc">مستندات</option>
+        <option value="link">روابط</option>
+      </select>
+    </div>
+  </div>
+  <div id="chapList" class="grid g2"></div>
+</section>
+
+<!-- الاختبارات -->
+<section id="quiz">
+  <h2>مولّد الاختبارات</h2>
+  <div id="quizSetup" class="card">
+    <h3>إعداد الاختبار</h3>
+    <p class="muted">اختر الشباتر التي تريد الاختبار فيها:</p>
+    <div class="chips" id="topicChips"></div>
+    <div class="row" style="margin-top:14px">
+      <label for="qCount">عدد الأسئلة</label>
+      <select id="qCount"><option>5</option><option selected>10</option><option>15</option><option>20</option></select>
+      <label for="qMode">النمط</label>
+      <select id="qMode">
+        <option value="practice">تدريب (يظهر الحل مباشرة)</option>
+        <option value="exam">اختبار (النتيجة في النهاية)</option>
+      </select>
+      <button class="btn" id="startQuiz">ابدأ</button>
+    </div>
+    <div id="hist" style="margin-top:16px"></div>
+  </div>
+  <div id="quizRun" class="card" hidden></div>
+</section>
+
+<!-- المساعد -->
+<section id="assistant">
+  <h2>مساعد الشرح</h2>
+  <div class="grid g2">
+    <div class="card">
+      <div class="chat">
+        <div class="msgs" id="msgs" aria-live="polite"></div>
+        <div class="chips" id="sugg" style="margin-top:8px"></div>
+        <form class="compose" id="chatForm">
+          <input id="chatIn" placeholder="اكتب سؤالك… مثال: وش الفرق بين التنافي والاستقلال؟" autocomplete="off">
+          <button class="btn">إرسال</button>
+        </form>
+      </div>
+    </div>
+    <div class="card">
+      <h3>🧮 أدوات حساب سريعة</h3>
+      <div class="calc">
+        <b>تباديل وتوافيق</b>
+        <div class="row">n <input id="c_n" type="number" min="0" max="50" value="6"> r <input id="c_r" type="number" min="0" max="50" value="2"> <button class="btn sm" id="c_go">احسب</button></div>
+        <div class="out" id="c_out"></div>
+      </div>
+      <div class="calc">
+        <b>توزيع ذات الحدين</b>
+        <div class="row">n <input id="b_n" type="number" min="1" max="100" value="10"> p <input id="b_p" type="number" min="0" max="1" step="0.01" value="0.5"> k <input id="b_k" type="number" min="0" max="100" value="3"> <button class="btn sm" id="b_go">احسب</button></div>
+        <div class="out" id="b_out"></div>
+      </div>
+      <div class="calc">
+        <b>نظرية بايز (بالنسب %)</b>
+        <div class="row">P(A) <input id="y_p" type="number" step="0.1" value="5"> P(B|A) <input id="y_s" type="number" step="0.1" value="95"> P(B|A′) <input id="y_f" type="number" step="0.1" value="8"> <button class="btn sm" id="y_go">احسب</button></div>
+        <div class="out" id="y_out"></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+</main>
+<footer>مختبر الاحتمالات — مشروع تعليمي</footer>
+
+<script>
+/* ============================================================
+   1) إعدادات المحتوى — عدّل هنا الشباتر والملفات
+   ------------------------------------------------------------
+   لإضافة ملف: ارفعه في مجلد files/ على GitHub ثم أضف سطراً في files:
+   { name:'اسم الملف', type:'pdf' | 'ppt' | 'doc' | 'link', url:'files/اسم-الملف.pdf' }
+   ============================================================ */
+const CHAPTERS = [
+  { id:'counting', title:'الشابتر 1: مبادئ العد',
+    desc:'مبدأ الضرب، التباديل (الترتيب مهم)، والتوافيق (الترتيب غير مهم).',
+    formulas:['n! = n × (n−1) × … × 1','P(n,r) = n! / (n−r)!','C(n,r) = n! / (r!(n−r)!)'],
+    files:[
+      { name:'ملخص الشابتر 1', type:'pdf', url:'files/chapter1-summary.pdf' },
+      { name:'تمارين الشابتر 1', type:'pdf', url:'files/chapter1-exercises.pdf' }
+    ]},
+  { id:'sample', title:'الشابتر 2: فضاء العينة والأحداث',
+    desc:'فضاء العينة S هو مجموعة كل النتائج الممكنة، والحدث مجموعة جزئية منه. الاحتمال الكلاسيكي = عدد النتائج المواتية ÷ عدد النتائج الكلي (للنتائج متساوية الفرص).',
+    formulas:['P(A) = n(A) / n(S)','التنافي: A ∩ B = ∅'],
+    files:[ { name:'ملخص الشابتر 2', type:'pdf', url:'files/chapter2-summary.pdf' } ]},
+  { id:'rules', title:'الشابتر 3: قواعد الاحتمال',
+    desc:'بديهيات الاحتمال، قاعدة المتمم، وقاعدة الجمع.',
+    formulas:['0 ≤ P(A) ≤ 1 , P(S) = 1','P(A′) = 1 − P(A)','P(A∪B) = P(A) + P(B) − P(A∩B)'],
+    files:[ { name:'ملخص الشابتر 3', type:'pdf', url:'files/chapter3-summary.pdf' } ]},
+  { id:'cond', title:'الشابتر 4: الاحتمال الشرطي والاستقلال',
+    desc:'احتمال حدوث A علماً بأن B حدث، وقاعدة الضرب، وشرط استقلال حدثين.',
+    formulas:['P(A|B) = P(A∩B) / P(B)','P(A∩B) = P(A|B)·P(B)','مستقلان: P(A∩B) = P(A)·P(B)'],
+    files:[ { name:'ملخص الشابتر 4', type:'pdf', url:'files/chapter4-summary.pdf' } ]},
+  { id:'bayes', title:'الشابتر 5: الاحتمال الكلي ونظرية بايز',
+    desc:'نجزّئ فضاء العينة إلى أجزاء ونحسب الاحتمال الكلي، ثم نعكس الشرط بنظرية بايز.',
+    formulas:['P(B) = P(B|A)P(A) + P(B|A′)P(A′)','P(A|B) = P(B|A)P(A) / P(B)'],
+    files:[ { name:'ملخص الشابتر 5', type:'pdf', url:'files/chapter5-summary.pdf' } ]},
+  { id:'rv', title:'الشابتر 6: المتغيرات العشوائية والتوقع',
+    desc:'المتغير العشوائي يربط كل نتيجة برقم. التوقع هو المتوسط المرجّح بالاحتمالات.',
+    formulas:['E(X) = Σ x·P(X=x)','Var(X) = E(X²) − [E(X)]²'],
+    files:[ { name:'ملخص الشابتر 6', type:'pdf', url:'files/chapter6-summary.pdf' } ]},
+  { id:'binom', title:'الشابتر 7: توزيع ذات الحدين',
+    desc:'n تجربة مستقلة، كل واحدة نجاح باحتمال p أو فشل باحتمال 1−p.',
+    formulas:['P(X=k) = C(n,k)·pᵏ·(1−p)ⁿ⁻ᵏ','E(X) = np , Var(X) = np(1−p)'],
+    files:[ { name:'ملخص الشابتر 7', type:'pdf', url:'files/chapter7-summary.pdf' } ]}
+];
+
+/* ============================================================
+   2) أدوات مساعدة
+   ============================================================ */
+const $ = (s, r=document) => r.querySelector(s);
+const $$ = (s, r=document) => [...r.querySelectorAll(s)];
+const rnd = (a,b) => Math.floor(Math.random()*(b-a+1))+a;
+const pick = a => a[rnd(0,a.length-1)];
+const shuffle = a => { a=[...a]; for(let i=a.length-1;i>0;i--){const j=rnd(0,i);[a[i],a[j]]=[a[j],a[i]]} return a; };
+const gcd = (a,b) => b ? gcd(b, a%b) : a;
+const fact = n => { let r=1; for(let i=2;i<=n;i++) r*=i; return r; };
+const nPr = (n,r) => (r<0||r>n) ? 0 : fact(n)/fact(n-r);
+const nCr = (n,r) => { if(r<0||r>n) return 0; r=Math.min(r,n-r); let x=1; for(let i=1;i<=r;i++) x=x*(n-r+i)/i; return Math.round(x); };
+const frac = (n,d) => { const g=gcd(n,d)||1; n/=g; d/=g; return d===1 ? String(n) : n+'/'+d; };
+const dec = (x,k=3) => String(+x.toFixed(k));
+const M = t => `<span class="m">${t}</span>`;
+const esc = s => String(s).replace(/[&<>"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+const store = {
+  get(k,d){ try{ const v=localStorage.getItem(k); return v?JSON.parse(v):d; }catch(e){ return d; } },
+  set(k,v){ try{ localStorage.setItem(k, JSON.stringify(v)); }catch(e){} }
+};
+
+/* ============================================================
+   3) التنقل بين الأقسام
+   ============================================================ */
+function show(tab){
+  if(!$('#'+tab)) tab='home';
+  $$('main > section').forEach(s => s.classList.toggle('on', s.id===tab));
+  $$('#nav button').forEach(b => b.classList.toggle('on', b.dataset.tab===tab));
+  if(location.hash !== '#'+tab) history.replaceState(null,'','#'+tab);
+  window.scrollTo({top:0});
+}
+$$('#nav button').forEach(b => b.onclick = () => show(b.dataset.tab));
+$$('[data-go]').forEach(b => b.onclick = () => show(b.dataset.go));
+window.addEventListener('hashchange', () => show(location.hash.slice(1)));
+
+/* ============================================================
+   4) قسم الشباتر والملفات
+   ============================================================ */
+const TYPE_LABEL = { pdf:'PDF', ppt:'عرض', doc:'مستند', link:'رابط' };
+function renderChapters(){
+  const q = $('#fSearch').value.trim().toLowerCase();
+  const t = $('#fType').value;
+  const html = CHAPTERS.map(c => {
+    const files = c.files.filter(f => !t || f.type===t);
+    const hay = (c.title+' '+c.desc+' '+c.formulas.join(' ')+' '+c.files.map(f=>f.name).join(' ')).toLowerCase();
+    if(q && !hay.includes(q)) return '';
+    if(t && !files.length) return '';
+    return `<article class="card chap">
+      <h3>${esc(c.title)}</h3>
+      <p class="muted">${esc(c.desc)}</p>
+      <details open><summary>القوانين الأساسية</summary>
+        <div class="formulas">${c.formulas.map(f=>M(esc(f))).join('')}</div>
+      </details>
+      <div class="files">${files.length
+        ? files.map(f=>`<a class="file" href="${esc(f.url)}" target="_blank" rel="noopener"><b>${TYPE_LABEL[f.type]||'ملف'}</b>${esc(f.name)}</a>`).join('')
+        : '<span class="muted">لا توجد ملفات بعد.</span>'}</div>
+      <div style="margin-top:12px"><button class="btn ghost sm" data-quiz="${c.id}">اختبر نفسك في هذا الشابتر</button></div>
+    </article>`;
+  }).join('');
+  $('#chapList').innerHTML = html || '<div class="card muted">ما لقيت نتائج مطابقة.</div>';
+  $$('[data-quiz]').forEach(b => b.onclick = () => {
+    $$('#topicChips input').forEach(i => i.checked = (i.value===b.dataset.quiz));
+    show('quiz');
+  });
+}
+$('#fSearch').oninput = renderChapters;
+$('#fType').onchange = renderChapters;
+
+/* ============================================================
+   5) مولّد الأسئلة — كل دالة ترجع سؤالاً بأرقام عشوائية
+   ============================================================ */
+function build(correct, wrongs){
+  const set=[correct];
+  for(const w of wrongs){ const s=String(w); if(!set.includes(s)) set.push(s); if(set.length===4) break; }
+  let guard=0;
+  while(set.length<4 && guard++<50){
+    let c;
+    if(correct.includes('/')) c = frac(rnd(1,9), rnd(10,60));
+    else if(/^-?\d+$/.test(correct)) c = String(parseInt(correct)+rnd(1,9));
+    else c = dec(parseFloat(correct)+rnd(1,9)/20, 3);
+    if(!set.includes(c)) set.push(c);
+  }
+  const opts = shuffle(set);
+  return { options:opts, answer:opts.indexOf(correct) };
+}
+
+const GEN = {
+counting:[
+  () => { const n=rnd(4,7), c=fact(n);
+    return { q:`بكم طريقة مختلفة يمكن ترتيب ${n} كتب مختلفة في صف واحد على رف؟`, correct:String(c),
+      wrongs:[fact(n-1), n*n, fact(n+1), n*2, c/2],
+      explain:`الترتيب مهم والعناصر مختلفة، إذن العدد = ${M(n+'! = '+c)}.` }; },
+  () => { const n=rnd(6,10), r=rnd(2,4), c=nCr(n,r);
+    return { q:`لجنة من ${r} أشخاص تُختار من ${n} أشخاص (الترتيب غير مهم). كم لجنة ممكنة؟`, correct:String(c),
+      wrongs:[nPr(n,r), c+n, c-1, n*r, nCr(n,r+1)],
+      explain:`الترتيب غير مهم إذن توافيق: ${M(`C(${n},${r}) = ${n}! / (${r}!·${n-r}!) = ${c}`)}.` }; },
+  () => { const a=rnd(2,5), b=rnd(2,5), c=rnd(2,4), t=a*b*c;
+    return { q:`عند شخص ${a} قمصان و${b} بناطيل و${c} أحذية. كم زياً مختلفاً يمكنه تكوينه (قميص + بنطلون + حذاء)؟`, correct:String(t),
+      wrongs:[a+b+c, a*b, t*2, a*b+c, t-a],
+      explain:`مبدأ الضرب: ${M(`${a} × ${b} × ${c} = ${t}`)}.` }; },
+  () => { const n=rnd(6,10), c=nPr(n,3);
+    return { q:`في سباق ${n} متسابقين، كم طريقة مختلفة لتوزيع المراكز الثلاثة الأولى (ذهبية، فضية، برونزية)؟`, correct:String(c),
+      wrongs:[nCr(n,3), n*3, n**3, nPr(n,2), c+n],
+      explain:`الترتيب مهم إذن تباديل: ${M(`P(${n},3) = ${n}×${n-1}×${n-2} = ${c}`)}.` }; }
+],
+sample:[
+  () => { const n=rnd(2,5), c=2**n;
+    return { q:`عند رمي ${n} عملات معدنية، كم عنصراً في فضاء العينة؟`, correct:String(c),
+      wrongs:[2*n, n*n, 2**(n+1), 2**(n-1), c+2],
+      explain:`لكل عملة نتيجتان، فالعدد = ${M(`2^${n} = ${c}`)}.` }; },
+  () => { const k=rnd(1,4), c=frac(6-k,6);
+    return { q:`عند رمي نرد عادي مرة واحدة، ما احتمال ظهور عدد أكبر من ${k}؟`, correct:c,
+      wrongs:[frac(k,6), frac(7-k,6), frac(Math.max(1,5-k),6), frac(6-k,12), '1/6'],
+      explain:`النتائج المواتية: ${6-k} من أصل 6، إذن ${M(`P = ${6-k}/6 = ${c}`)}.` }; },
+  () => { const s=rnd(2,12), c=6-Math.abs(s-7);
+    return { q:`عند رمي نردين، كم نتيجة (ثنائية مرتبة) مجموعها ${s}؟`, correct:String(c),
+      wrongs:[c+1, Math.max(0,c-1), 6, s-1, 36-c],
+      explain:`نعدّ الأزواج (a,b) التي مجموعها ${s}، وعددها ${M(c)} (فضاء العينة الكلي 36).` }; }
+],
+rules:[
+  () => { const s=rnd(2,12), c=6-Math.abs(s-7), a=frac(c,36);
+    return { q:`عند رمي نردين، ما احتمال أن يكون المجموع ${s}؟`, correct:a,
+      wrongs:[frac(c+1,36), frac(Math.max(1,c-1),36), frac(c,6), frac(1,s), frac(c,12)],
+      explain:`${c} نتيجة مواتية من 36: ${M(`P = ${c}/36 = ${a}`)}.` }; },
+  () => { const p=rnd(5,95)/100, c=dec(1-p,2);
+    return { q:`إذا كان P(A) = ${p}، فما قيمة P(A′) (احتمال المتمم)؟`, correct:c,
+      wrongs:[dec(p,2), dec(1-p+0.1,2), dec(Math.max(0,1-p-0.1),2), dec(p*p,4), dec(1+p,2)],
+      explain:`قاعدة المتمم: ${M(`P(A′) = 1 − ${p} = ${c}`)}.` }; },
+  () => { const a=rnd(3,6), b=rnd(2,5), ab=rnd(1,Math.min(a,b)-1), c=dec((a+b-ab)/10,2);
+    return { q:`إذا كان P(A)=${a/10} و P(B)=${b/10} و P(A∩B)=${ab/10}، فما قيمة P(A∪B)؟`, correct:c,
+      wrongs:[dec((a+b)/10,2), dec((a+b+ab)/10,2), dec(a*b/100,2), dec((a-ab)/10,2)],
+      explain:`قاعدة الجمع: ${M(`P(A∪B) = ${a/10} + ${b/10} − ${ab/10} = ${c}`)}. (خطأ شائع: نسيان طرح التقاطع.)` }; },
+  () => pick([
+    { q:'سُحبت ورقة عشوائياً من 52 ورقة. ما احتمال أن تكون قلباً (♥) أو آص (A)؟', correct:'4/13',
+      wrongs:['17/52','1/4','2/13','5/13'],
+      explain:`القلوب 13، الآصات 4، والمشترك (آص القلب) 1: ${M('P = (13 + 4 − 1)/52 = 16/52 = 4/13')}.` },
+    { q:'سُحبت ورقة عشوائياً من 52 ورقة. ما احتمال أن تكون ملكاً (K) أو ملكة (Q)؟', correct:'2/13',
+      wrongs:['1/13','4/13','1/26','8/13'],
+      explain:`حدثان متنافيان: ${M('P = 4/52 + 4/52 = 8/52 = 2/13')}.` },
+    { q:'سُحبت ورقة عشوائياً من 52 ورقة. ما احتمال ألّا تكون صورة (J, Q, K)؟', correct:'10/13',
+      wrongs:['3/13','12/13','9/13','40/13'],
+      explain:`الصور 12 ورقة، والمتمم: ${M('P = 1 − 12/52 = 40/52 = 10/13')}.` }
+  ])
+],
+cond:[
+  () => { const b=rnd(3,8), ab=rnd(1,b-1), c=frac(ab,b);
+    return { q:`إذا كان P(B)=${b/10} و P(A∩B)=${ab/10}، فما قيمة P(A|B)؟`, correct:c,
+      wrongs:[frac(b,ab), frac(ab,10), frac(b-ab,b), frac(ab+1,b), frac(ab,b+1)],
+      explain:`${M(`P(A|B) = P(A∩B)/P(B) = ${ab/10}/${b/10} = ${c}`)}.` }; },
+  () => { const a=rnd(2,8), b=rnd(2,8), c=dec(a*b/100,2);
+    return { q:`حدثان مستقلان A و B حيث P(A)=${a/10} و P(B)=${b/10}. ما قيمة P(A∩B)؟`, correct:c,
+      wrongs:[dec((a+b)/10,2), dec((a+b)/10-a*b/100,2), dec(a/10,2), dec(Math.abs(a-b)/10,2)],
+      explain:`للمستقلين: ${M(`P(A∩B) = P(A)·P(B) = ${a/10}×${b/10} = ${c}`)}.` }; },
+  () => { const r=rnd(3,6), bl=rnd(3,6), t=r+bl, c=frac(r*(r-1), t*(t-1));
+    return { q:`في كيس ${r} كرات حمراء و${bl} زرقاء. سُحبت كرتان بدون إرجاع. ما احتمال أن تكونا حمراوين؟`, correct:c,
+      wrongs:[frac(r*r,t*t), frac(r,t), frac(r*(r-1),t*t), frac(2*r,t*(t-1))],
+      explain:`${M(`P = (${r}/${t})·(${r-1}/${t-1}) = ${c}`)} لأن الكرة الأولى لا تعود فينقص العدد الكلي والأحمر.` }; },
+  () => { const c='1/221';
+    return { q:'سُحبت ورقتان من 52 ورقة بدون إرجاع. ما احتمال أن تكونا آصين؟', correct:c,
+      wrongs:['1/169','1/26','1/52','4/221'],
+      explain:`${M('P = (4/52)·(3/51) = 12/2652 = 1/221')}.` }; }
+],
+bayes:[
+  () => { const pa=rnd(2,8), x=rnd(5,9), y=rnd(1,4), v=(pa*x+(10-pa)*y)/100, c=dec(v,3);
+    return { q:`P(A)=${pa/10}، P(B|A)=${x/10}، P(B|A′)=${y/10}. ما قيمة P(B)؟`, correct:c,
+      wrongs:[dec(pa*x/100,3), dec((x+y)/20,3), dec(x/10,3), dec((pa*x+(10-pa)*y)/100+0.1,3)],
+      explain:`الاحتمال الكلي: ${M(`P(B) = ${x/10}×${pa/10} + ${y/10}×${(10-pa)/10} = ${c}`)}.` }; },
+  () => { const p=rnd(1,10)/100, s=rnd(90,99)/100, f=rnd(2,10)/100,
+      num=p*s, den=p*s+(1-p)*f, c=dec(num/den,3);
+    return { q:`مرض نسبة انتشاره ${p*100}%. فحصه يعطي نتيجة موجبة للمريض بنسبة ${s*100}%، وللسليم (خطأً) بنسبة ${f*100}%. إذا كانت نتيجة شخص موجبة، ما احتمال أنه مريض فعلاً؟`, correct:c,
+      wrongs:[dec(s,3), dec(num,3), dec(s*(1-f),3), dec(num/(1-p)/f,3), dec(1-f,3)],
+      explain:`بايز: ${M(`P(مريض|موجب) = (${s}×${p}) / (${s}×${p} + ${f}×${dec(1-p,2)}) = ${dec(num,4)}/${dec(den,4)} ≈ ${c}`)}. لاحظ أن الاحتمال أقل بكثير من دقة الفحص لأن المرض نادر.` }; }
+],
+rv:[
+  () => { let p1,p2,p3; do{ p1=rnd(2,5); p2=rnd(2,5); p3=10-p1-p2; }while(p3<1);
+    const x1=rnd(0,3), x2=rnd(4,7), x3=rnd(8,12), E=(x1*p1+x2*p2+x3*p3)/10, c=dec(E,1);
+    return { q:`متغير عشوائي X يأخذ القيم ${x1} و${x2} و${x3} باحتمالات ${p1/10} و${p2/10} و${p3/10} على الترتيب. ما قيمة E(X)؟`, correct:c,
+      wrongs:[dec((x1+x2+x3)/3,2), dec(E+1,1), dec(Math.max(0,E-1),1), dec((p1+p2+p3)/10+E/2,2)],
+      explain:`${M(`E(X) = ${x1}×${p1/10} + ${x2}×${p2/10} + ${x3}×${p3/10} = ${c}`)}. (ليس متوسطاً عادياً لأن القيم غير متساوية الاحتمال.)` }; },
+  () => { const w=rnd(5,20), l=rnd(2,10), p=rnd(2,6)/10, E=w*p-l*(1-p), c=dec(E,2);
+    return { q:`لعبة: تربح ${w} ريالاً باحتمال ${p}، وتخسر ${l} ريالات باحتمال ${dec(1-p,1)}. ما التوقع E(X) لربحك؟`, correct:c,
+      wrongs:[dec(w*p+l*(1-p),2), dec(w-l,2), dec(w*p,2), dec(-E,2), dec((w-l)/2,2)],
+      explain:`الخسارة تُحسب بقيمة سالبة: ${M(`E = ${w}×${p} − ${l}×${dec(1-p,1)} = ${c}`)}.` }; }
+],
+binom:[
+  () => { const n=rnd(4,8), p=pick([0.2,0.3,0.4,0.5,0.6]), k=rnd(1,n-1),
+      v=nCr(n,k)*p**k*(1-p)**(n-k), c=dec(v,4);
+    return { q:`رميات مستقلة n=${n} باحتمال نجاح p=${p} لكل رمية. ما احتمال أن يكون عدد النجاحات بالضبط ${k}؟`, correct:c,
+      wrongs:[dec(nCr(n,k)*p**k,4), dec(p**k*(1-p)**(n-k),4), dec(nCr(n,k)*p**(n-k)*(1-p)**k,4), dec(v*2,4)],
+      explain:`${M(`P(X=${k}) = C(${n},${k})·${p}^${k}·${dec(1-p,1)}^${n-k} = ${nCr(n,k)} × ${dec(p**k*(1-p)**(n-k),6)} ≈ ${c}`)}.` }; },
+  () => { const n=rnd(10,40), p=pick([0.1,0.2,0.25,0.3,0.5]), c=dec(n*p,2);
+    return { q:`X ~ Binomial(n=${n}, p=${p}). ما قيمة E(X)؟`, correct:c,
+      wrongs:[dec(n*p*(1-p),3), dec(n/p,2), dec(p*(1-p),3), dec(n*(1-p),2)],
+      explain:`${M(`E(X) = n·p = ${n}×${p} = ${c}`)}.` }; }
+]
+};
+
+function makeQ(id){
+  const r = pick(GEN[id])();
+  const b = build(r.correct, r.wrongs);
+  return { q:r.q, options:b.options, answer:b.answer, explain:r.explain, topic:id };
+}
+
+/* ============================================================
+   6) واجهة الاختبار
+   ============================================================ */
+let Q = null;
+function renderTopicChips(){
+  $('#topicChips').innerHTML = CHAPTERS.map(c =>
+    `<label class="chip"><input type="checkbox" value="${c.id}" checked>${esc(c.title.replace(/^الشابتر \d+:\s*/,''))}</label>`).join('');
+}
+function renderHist(){
+  const h = store.get('prob_hist', []);
+  $('#hist').innerHTML = h.length
+    ? `<b>آخر نتائجك</b><div class="chips" style="margin-top:6px">${h.slice(-6).reverse().map(x=>
+        `<span class="tag">${x.score}/${x.total} — ${x.date}</span>`).join('')}</div>`
+    : '';
+  const stats = $('#homeStats');
+  if(h.length){
+    const best = Math.max(...h.map(x => x.score/x.total));
+    stats.innerHTML = `<b>تقدمك:</b> أنجزت ${h.length} اختبار، وأفضل نتيجة ${Math.round(best*100)}%.`;
+  } else {
+    stats.innerHTML = '<b>تقدمك:</b> <span class="muted">ما بدأت أي اختبار بعد. جرّب أول اختبار!</span>';
+  }
+}
+$('#startQuiz').onclick = () => {
+  const ids = $$('#topicChips input:checked').map(i => i.value);
+  if(!ids.length){ alert('اختر شابتراً واحداً على الأقل.'); return; }
+  const n = +$('#qCount').value, list = [], seen = new Set();
+  for(let k=0; k<n; k++){
+    let q, tries=0;
+    do { q = makeQ(ids[k % ids.length]); } while(seen.has(q.q) && ++tries<8);
+    seen.add(q.q); list.push(q);
+  }
+  Q = { list:shuffle(list), i:0, ans:Array(n).fill(null), mode:$('#qMode').value, locked:false };
+  $('#quizSetup').hidden = true; $('#quizRun').hidden = false;
+  renderQ();
+};
+function renderQ(){
+  const q = Q.list[Q.i], total = Q.list.length, practice = Q.mode==='practice';
+  const chosen = Q.ans[Q.i], answered = chosen!==null;
+  const letters = ['أ','ب','ج','د'];
+  $('#quizRun').innerHTML = `
+    <div class="row" style="justify-content:space-between"><b>سؤال ${Q.i+1} من ${total}</b>
+      <button class="btn ghost sm" id="quitQ">إنهاء</button></div>
+    <div class="progress"><div style="width:${(Q.i/total)*100}%"></div></div>
+    <div class="qtext">${esc(q.q)}</div>
+    <div class="opts">${q.options.map((o,i) => {
+      let cls='opt';
+      if(practice && answered){ if(i===q.answer) cls+=' ok'; else if(i===chosen) cls+=' bad'; }
+      else if(i===chosen) cls+=' sel';
+      return `<button class="${cls}" data-i="${i}" ${practice&&answered?'disabled':''}><span class="l">${letters[i]}</span><span class="v">${esc(o)}</span></button>`;
+    }).join('')}</div>
+    ${practice && answered ? `<div class="expl"><b>${chosen===q.answer?'✅ إجابة صحيحة':'❌ إجابة خاطئة'}</b><br>${q.explain}</div>` : ''}
+    <div class="row" style="margin-top:16px;justify-content:space-between">
+      <button class="btn ghost" id="prevQ" ${Q.i===0||practice?'disabled':''}>السابق</button>
+      <button class="btn" id="nextQ" ${answered?'':'disabled'}>${Q.i===total-1?'إنهاء وعرض النتيجة':'التالي'}</button>
+    </div>`;
+  $$('#quizRun .opt').forEach(b => b.onclick = () => { Q.ans[Q.i] = +b.dataset.i; renderQ(); });
+  $('#nextQ').onclick = () => { if(Q.i===total-1) finishQ(); else { Q.i++; renderQ(); } };
+  $('#prevQ').onclick = () => { if(Q.i>0){ Q.i--; renderQ(); } };
+  $('#quitQ').onclick = () => { if(confirm('تبي تنهي الاختبار الحين؟')) finishQ(); };
+}
+function finishQ(){
+  const total = Q.list.length;
+  const score = Q.list.reduce((s,q,i) => s + (Q.ans[i]===q.answer ? 1 : 0), 0);
+  const h = store.get('prob_hist', []);
+  h.push({ score, total, date:new Date().toLocaleDateString('ar-OM') });
+  store.set('prob_hist', h.slice(-30));
+  const pct = Math.round(score/total*100);
+  const msg = pct>=85 ? 'ممتاز! مستواك عالي 👏' : pct>=60 ? 'جيد، راجع الأسئلة الخاطئة 👍' : 'تحتاج مراجعة أكثر، لا تستسلم 💪';
+  $('#quizRun').innerHTML = `
+    <div class="score">${score} / ${total}</div>
+    <p style="text-align:center"><b>${pct}%</b> — ${msg}</p>
+    <div class="row" style="justify-content:center;margin-bottom:10px">
+      <button class="btn" id="again">اختبار جديد</button>
+      <button class="btn ghost" id="toSetup">تغيير الإعدادات</button>
+    </div>
+    <h3>مراجعة الحل</h3>
+    ${Q.list.map((q,i) => {
+      const ok = Q.ans[i]===q.answer;
+      return `<div class="rev"><div class="st">${ok?'✅':'❌'} سؤال ${i+1}</div>
+        <div>${esc(q.q)}</div>
+        <div class="muted">إجابتك: <span class="m">${Q.ans[i]===null?'—':esc(q.options[Q.ans[i]])}</span> | الصحيحة: <span class="m">${esc(q.options[q.answer])}</span></div>
+        <div class="expl">${q.explain}</div></div>`;
+    }).join('')}`;
+  $('#again').onclick = () => $('#startQuiz').click();
+  $('#toSetup').onclick = () => { $('#quizRun').hidden = true; $('#quizSetup').hidden = false; renderHist(); };
+  renderHist();
+}
+
+/* ============================================================
+   7) مساعد الشرح (يعمل داخل المتصفح بقاعدة معرفة، بدون إنترنت)
+   ============================================================ */
+const norm = s => String(s).toLowerCase()
+  .replace(/[٠-٩]/g, d => '٠١٢٣٤٥٦٧٨٩'.indexOf(d))
+  .replace(/[\u064B-\u0652\u0640]/g,'')
+  .replace(/[أإآ]/g,'ا').replace(/ى/g,'ي').replace(/ة/g,'ه')
+  .replace(/\s+/g,' ').trim();
+
+const KB = [
+ { t:'فضاء العينة', keys:['فضاء العينه','فضاء العينة','sample space','النتايج الممكنه','النتائج الممكنه'],
+   h:`<p><b>فضاء العينة (S)</b> هو مجموعة <b>كل النتائج الممكنة</b> للتجربة العشوائية.</p>
+      <p>مثال: رمي عملة مرتين: ${M('S = {HH, HT, TH, TT}')} وعدد عناصره 4.</p>
+      <p>الحدث A هو أي مجموعة جزئية من S، مثل "ظهور صورة واحدة على الأقل".</p>` },
+ { t:'الاحتمال الكلاسيكي', keys:['تعريف الاحتمال','الاحتمال الكلاسيكي','ما هو الاحتمال','وش الاحتمال','classical'],
+   h:`<p>إذا كانت كل النتائج <b>متساوية الفرص</b>: ${M('P(A) = n(A) / n(S)')}</p>
+      <p>مثال: احتمال ظهور عدد زوجي في نرد = ${M('3/6 = 1/2')}.</p>
+      <p>تذكّر: ${M('0 ≤ P(A) ≤ 1')} و ${M('P(S)=1')}.</p>` },
+ { t:'الأحداث المتنافية', keys:['متنافيه','متنافي','mutually exclusive','منفصله','منفصلة'],
+   h:`<p>حدثان <b>متنافيان</b> لا يمكن أن يحدثا معاً: ${M('A ∩ B = ∅')} إذن ${M('P(A∩B)=0')}.</p>
+      <p>وتصبح قاعدة الجمع: ${M('P(A∪B) = P(A) + P(B)')}.</p>
+      <p>مثال: ظهور 2 وظهور 5 في رمية نرد واحدة.</p>` },
+ { t:'الفرق بين التنافي والاستقلال', keys:['الفرق بين التنافي','التنافي والاستقلال','الاستقلال والتنافي','متنافيه ام مستقله','فرق بين المستقله والمتنافيه'],
+   h:`<p>خطأ شائع! هما مفهومان مختلفان:</p>
+      <p>• <b>متنافيان:</b> ${M('P(A∩B)=0')} (لا يحدثان معاً).</p>
+      <p>• <b>مستقلان:</b> ${M('P(A∩B)=P(A)P(B)')} (حدوث أحدهما لا يغيّر احتمال الآخر).</p>
+      <p>إذا كان P(A)>0 و P(B)>0 فلا يمكن أن يكونا متنافيين <b>ومستقلين</b> معاً؛ لأن حدوث أحدهما يعني استحالة الآخر.</p>` },
+ { t:'قاعدة المتمم', keys:['المتمم','متمم','complement','احتمال عدم حدوث'],
+   h:`<p>${M('P(A′) = 1 − P(A)')}</p>
+      <p>مفيدة جداً في عبارات "على الأقل". مثال: P(على الأقل صورة في 3 رميات) = ${M('1 − (1/2)³ = 7/8')}.</p>` },
+ { t:'قاعدة الجمع', keys:['قاعده الجمع','قانون الجمع','اتحاد','union','او ب','P(AuB)','احتمال او'],
+   h:`<p>${M('P(A∪B) = P(A) + P(B) − P(A∩B)')}</p>
+      <p>نطرح التقاطع لأننا عددناه مرتين. ثلاثة أحداث: ${M('P(A∪B∪C)=ΣP − ΣP(تقاطعات ثنائية) + P(A∩B∩C)')}.</p>` },
+ { t:'الاحتمال الشرطي', keys:['شرطي','الشرطي','conditional','علما ان','علماً ان','بشرط'],
+   h:`<p>احتمال A <b>علماً بأن</b> B حدث: ${M('P(A|B) = P(A∩B) / P(B)')} بشرط ${M('P(B)>0')}.</p>
+      <p>الفكرة: فضاء العينة يصغر ليصبح B فقط.</p>
+      <p>مثال: P(A∩B)=0.2 و P(B)=0.5 ⇒ ${M('P(A|B)=0.4')}.</p>` },
+ { t:'قاعدة الضرب', keys:['قاعده الضرب','قانون الضرب','multiplication rule','تقاطع'],
+   h:`<p>${M('P(A∩B) = P(A|B)·P(B) = P(B|A)·P(A)')}</p>
+      <p>للسحب بدون إرجاع نستخدمها مباشرة: ${M('P(آصين) = (4/52)(3/51)')}.</p>` },
+ { t:'الاستقلال', keys:['استقلال','مستقل','مستقله','independent','independence'],
+   h:`<p>A و B <b>مستقلان</b> إذا كان ${M('P(A∩B) = P(A)·P(B)')}، ويكافئ ${M('P(A|B)=P(A)')}.</p>
+      <p>مثال: رمي عملة ونرد، النتائج مستقلة. أما السحب بدون إرجاع فالأحداث <b>غير</b> مستقلة.</p>` },
+ { t:'الاحتمال الكلي', keys:['الاحتمال الكلي','القانون الكلي','total probability','تجزئه','تجزيء'],
+   h:`<p>إذا كانت ${M('A₁,…,Aₙ')} تجزئة لفضاء العينة (متنافية ومجموعها S):</p>
+      <p>${M('P(B) = Σ P(B|Aᵢ)·P(Aᵢ)')}</p>
+      <p>طريقة الحل: ارسم شجرة احتمالات، اضرب على الفروع، واجمع الفروع التي تنتهي بـ B.</p>` },
+ { t:'نظرية بايز', keys:['بايز','bayes','بيز','عكس الشرط'],
+   h:`<p>${M('P(A|B) = P(B|A)·P(A) / P(B)')}</p>
+      <p>حيث المقام ${M('P(B)')} يُحسب بالاحتمال الكلي.</p>
+      <p>مثال: مرض نسبته 5%، دقة الفحص 95%، خطأ الفحص 8% ⇒ احتمال المرض عند النتيجة الموجبة حوالي 38% فقط. جرّبها في حاسبة بايز على اليسار.</p>` },
+ { t:'مبدأ العد', keys:['مبدا العد','مبدأ العد','مبدا الضرب','قاعده العد','counting'],
+   h:`<p>إذا كانت المهمة من خطوات مستقلة تُنجز بـ ${M('n₁, n₂, …, n_k')} طريقة، فالعدد الكلي ${M('n₁×n₂×…×n_k')}.</p>
+      <p>مثال: 3 قمصان و4 بناطيل ⇒ ${M('3×4 = 12')} زياً.</p>` },
+ { t:'التباديل', keys:['تباديل','تبديل','permutation','ترتيب'],
+   h:`<p>عدد طرق ترتيب r عنصراً من n عنصراً (<b>الترتيب مهم</b>): ${M('P(n,r) = n!/(n−r)!')}</p>
+      <p>مثال: ${M('P(5,2) = 5×4 = 20')}. ويمكنك كتابة <span class="m">P(5,2)</span> في المحادثة لأحسبها.</p>` },
+ { t:'التوافيق', keys:['توافيق','تواقيق','combination','اختيار','لجنه'],
+   h:`<p>عدد طرق اختيار r عنصراً من n (<b>الترتيب غير مهم</b>): ${M('C(n,r) = n! / (r!(n−r)!)')}</p>
+      <p>مثال: ${M('C(5,2) = 10')}. اكتب <span class="m">C(5,2)</span> وأحسبها لك.</p>
+      <p>الفرق بسيط: اسأل نفسك "هل تغيير الترتيب يعطي نتيجة جديدة؟" نعم ⇒ تباديل، لا ⇒ توافيق.</p>` },
+ { t:'المضروب', keys:['مضروب','factorial','عاملي'],
+   h:`<p>${M('n! = n×(n−1)×…×1')} و ${M('0! = 1')}. مثال: ${M('5! = 120')}. اكتب <span class="m">6!</span> وأحسبها.</p>` },
+ { t:'المتغير العشوائي', keys:['متغير عشوائي','المتغير العشوائي','random variable','دالة الاحتمال','pmf'],
+   h:`<p>المتغير العشوائي X دالة تربط كل نتيجة بعدد حقيقي، مثل "عدد الصور في 3 رميات".</p>
+      <p>دالة الكتلة: ${M('p(x) = P(X=x)')} وشروطها ${M('p(x) ≥ 0')} و ${M('Σp(x) = 1')}.</p>` },
+ { t:'التوقع', keys:['توقع','القيمه المتوقعه','expected','المتوسط','expectation'],
+   h:`<p>${M('E(X) = Σ x·P(X=x)')}</p>
+      <p>مثال: نرد ⇒ ${M('E = (1+2+…+6)/6 = 3.5')}.</p>
+      <p>خاصية مهمة: ${M('E(aX+b) = aE(X)+b')}.</p>` },
+ { t:'التباين', keys:['تباين','انحراف معياري','variance','standard deviation'],
+   h:`<p>${M('Var(X) = E(X²) − [E(X)]²')} والانحراف المعياري ${M('σ = √Var(X)')}.</p>
+      <p>وخاصيته: ${M('Var(aX+b) = a²·Var(X)')} (الإزاحة b لا تؤثر).</p>` },
+ { t:'توزيع ذات الحدين', keys:['ذات الحدين','ذات الحدين','binomial','ثنائي الحد'],
+   h:`<p>شروطه: n تجربة <b>مستقلة</b>، كل منها نجاح (p) أو فشل (1−p) والاحتمال ثابت.</p>
+      <p>${M('P(X=k) = C(n,k)·pᵏ·(1−p)ⁿ⁻ᵏ')}</p>
+      <p>${M('E(X)=np')} و ${M('Var(X)=np(1−p)')}.</p>
+      <p>استخدم حاسبة ذات الحدين على اليسار لحساب P(X=k) و P(X≤k).</p>` },
+ { t:'على الأقل', keys:['على الاقل','علي الاقل','at least','اكثر من'],
+   h:`<p>عبارات "على الأقل" يفضّل حلها بالمتمم: ${M('P(X ≥ 1) = 1 − P(X = 0)')}.</p>
+      <p>مثال: على الأقل صورة في 4 رميات = ${M('1 − (1/2)⁴ = 15/16')}.</p>` },
+ { t:'مع الإرجاع وبدون إرجاع', keys:['مع الارجاع','بدون ارجاع','with replacement','without replacement','سحب'],
+   h:`<p>• <b>مع الإرجاع:</b> الأحداث مستقلة والاحتمال ثابت، مثل ${M('(4/52)(4/52)')}.</p>
+      <p>• <b>بدون إرجاع:</b> الأحداث معتمدة، فيتغير العدد الكلي، مثل ${M('(4/52)(3/51)')}.</p>` }
+];
+
+const SUGGEST = ['وش الفرق بين التنافي والاستقلال؟','اشرح لي نظرية بايز','متى أستخدم التوافيق؟','C(8,3)','كيف أحل مسائل على الأقل؟','اشرح ذات الحدين'];
+
+function addMsg(html, who){
+  const d = document.createElement('div');
+  d.className = 'msg ' + who; d.innerHTML = html;
+  $('#msgs').appendChild(d);
+  $('#msgs').scrollTop = $('#msgs').scrollHeight;
+}
+function calcFromText(raw){
+  const t = raw.replace(/[٠-٩]/g, d => '٠١٢٣٤٥٦٧٨٩'.indexOf(d));
+  let m;
+  if((m = t.match(/\bC\s*\(\s*(\d+)\s*[,،]\s*(\d+)\s*\)/i))){
+    const n=+m[1], r=+m[2];
+    if(n>50) return 'القيمة كبيرة، استخدم n ≤ 50.';
+    return `<p>${M(`C(${n},${r}) = ${n}! / (${r}!·${n-r}!) = ${nCr(n,r)}`)}</p>`;
+  }
+  if((m = t.match(/\bP\s*\(\s*(\d+)\s*[,،]\s*(\d+)\s*\)/i))){
+    const n=+m[1], r=+m[2];
+    if(n>20) return 'القيمة كبيرة، استخدم n ≤ 20 للتباديل.';
+    return `<p>${M(`P(${n},${r}) = ${n}! / ${n-r}! = ${nPr(n,r)}`)}</p>`;
+  }
+  if((m = t.match(/(\d+)\s*!/))){
+    const n=+m[1];
+    if(n>20) return 'القيمة كبيرة، استخدم n ≤ 20.';
+    return `<p>${M(`${n}! = ${fact(n)}`)}</p>`;
+  }
+  return null;
+}
+function answer(raw){
+  const c = calcFromText(raw);
+  if(c) return c;
+  const q = norm(raw);
+  if(/^(مرحبا|هلا|السلام|اهلا|صباح|مساء|hi|hello)/.test(q))
+    return '<p>هلا والله! اسألني عن أي مفهوم في الاحتمالات، أو اكتب مثل <span class="m">C(6,2)</span> وأحسبها لك.</p>';
+  let best=null, bs=0;
+  for(const e of KB){
+    let s=0;
+    for(const k of e.keys){ const nk=norm(k); if(nk.length>1 && q.includes(nk)) s += nk.length; }
+    if(s>bs){ bs=s; best=e; }
+  }
+  if(best){
+    const rel = KB.filter(e => e!==best && e.keys.some(k => q.includes(norm(k)))).slice(0,2);
+    return `<p><b>${esc(best.t)}</b></p>${best.h}` +
+      (rel.length ? `<p class="muted">مواضيع ذات صلة: ${rel.map(r=>esc(r.t)).join('، ')}</p>` : '');
+  }
+  return `<p>ما لقيت شرحاً مطابقاً لسؤالك. جرّب تكتب اسم المفهوم مباشرة (مثل: الاحتمال الشرطي، بايز، التوافيق، التوقع)، أو اضغط على أحد الاقتراحات.</p>`;
+}
+function ask(text){
+  text = text.trim(); if(!text) return;
+  addMsg(esc(text), 'u');
+  setTimeout(() => addMsg(answer(text), 'b'), 250);
+}
+$('#chatForm').onsubmit = e => { e.preventDefault(); const v=$('#chatIn').value; $('#chatIn').value=''; ask(v); };
+$('#sugg').innerHTML = SUGGEST.map(s => `<button type="button" class="btn ghost sm">${esc(s)}</button>`).join('');
+$$('#sugg button').forEach(b => b.onclick = () => ask(b.textContent));
+addMsg('<p>أهلاً! أنا مساعد الشرح 👋 اسألني عن أي مفهوم من مادة الاحتمالات، أو اكتب مثل <span class="m">C(8,3)</span> أو <span class="m">P(5,2)</span> أو <span class="m">6!</span> وأحسبها لك.</p>', 'b');
+
+/* ---------- الحاسبات ---------- */
+$('#c_go').onclick = () => {
+  const n=+$('#c_n').value, r=+$('#c_r').value;
+  if(!(n>=0 && r>=0 && r<=n && n<=50)) { $('#c_out').textContent='أدخل 0 ≤ r ≤ n ≤ 50'; return; }
+  const p = n<=20 ? M(`P(${n},${r}) = ${nPr(n,r)}`) : '';
+  $('#c_out').innerHTML = `${M(`C(${n},${r}) = ${nCr(n,r)}`)} ${p}`;
+};
+$('#b_go').onclick = () => {
+  const n=+$('#b_n').value, p=+$('#b_p').value, k=+$('#b_k').value;
+  if(!(n>=1 && n<=100 && p>=0 && p<=1 && k>=0 && k<=n)) { $('#b_out').textContent='تأكد: 0 ≤ k ≤ n و 0 ≤ p ≤ 1'; return; }
+  const pmf = i => { let c=1; for(let j=1;j<=i;j++) c=c*(n-i+j)/j; return c*p**i*(1-p)**(n-i); };
+  let cum=0; for(let i=0;i<=k;i++) cum+=pmf(i);
+  $('#b_out').innerHTML = `${M(`P(X=${k}) = ${dec(pmf(k),5)}`)} ${M(`P(X≤${k}) = ${dec(cum,5)}`)}<br>${M(`E(X) = ${dec(n*p,3)}`)} ${M(`Var(X) = ${dec(n*p*(1-p),3)}`)}`;
+};
+$('#y_go').onclick = () => {
+  const p=+$('#y_p').value/100, s=+$('#y_s').value/100, f=+$('#y_f').value/100;
+  if([p,s,f].some(x => !(x>=0 && x<=1))) { $('#y_out').textContent='أدخل نسباً بين 0 و 100'; return; }
+  const den = s*p + f*(1-p);
+  if(den===0){ $('#y_out').textContent='المقام صفر'; return; }
+  $('#y_out').innerHTML = `${M(`P(B) = ${dec(den,5)}`)} ${M(`P(A|B) = ${dec(s*p/den,5)} ≈ ${dec(s*p/den*100,2)}%`)}`;
+};
+$('#c_go').click(); $('#b_go').click(); $('#y_go').click();
+
+/* ---------- تشغيل ---------- */
+renderChapters();
+renderTopicChips();
+renderHist();
+show(location.hash.slice(1) || 'home');
+</script>
+</body>
+</html>
